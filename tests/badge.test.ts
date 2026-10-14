@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BADGE_CLASS, updateFolderBadge } from '../src/badge';
+import { BADGE_CLASS, removeBadges, updateFolderBadge } from '../src/badge';
 import { DEFAULT_SETTINGS } from '../src/settings';
 import type { FolderChildCountSettings } from '../src/settings';
 import { file, folder } from './helpers';
@@ -120,5 +120,20 @@ describe('updateFolderBadge', () => {
 		expect(badge?.classList.contains(`${BADGE_CLASS}--bold`)).toBe(false);
 		expect(badge?.classList.contains(`${BADGE_CLASS}--hover`)).toBe(false);
 		expect(badge?.style.getPropertyValue('--fcc-color')).toBe('');
+	});
+});
+
+describe('removeBadges', () => {
+	it('removes every badge inside a root', () => {
+		const root = document.body.createDiv();
+		const first = root.createDiv({ cls: 'nav-folder-title' });
+		const second = root.createDiv({ cls: 'nav-folder-title' });
+		updateFolderBadge(first, folder(file()), settings());
+		updateFolderBadge(second, folder(file()), settings());
+		expect(root.querySelectorAll('.' + BADGE_CLASS).length).toBe(2);
+
+		removeBadges(root);
+
+		expect(root.querySelectorAll('.' + BADGE_CLASS).length).toBe(0);
 	});
 });

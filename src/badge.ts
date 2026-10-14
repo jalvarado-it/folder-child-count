@@ -30,6 +30,15 @@ function applyAppearance(
 }
 
 /**
+ * Remove every count badge inside the given root element.
+ *
+ * Used on unload so disabling the plugin leaves no stale badges behind.
+ */
+export function removeBadges(root: ParentNode): void {
+	root.querySelectorAll(`.${BADGE_CLASS}`).forEach((el) => el.remove());
+}
+
+/**
  * Create, update or remove the child-count badge inside a folder title element.
  *
  * Idempotent: calling it repeatedly reuses the existing badge instead of

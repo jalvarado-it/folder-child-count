@@ -11,17 +11,18 @@ interface Harness {
 	container: HTMLElement;
 	setFolder(path: string, value: unknown): void;
 	addTitle(path: string): HTMLElement;
+	closeExplorer(): void;
 }
 
 /** Fake `App` wired to a single file-explorer container. */
 function harness(): Harness {
 	const container = document.body.createDiv({ cls: 'workspace-leaf' });
 	const folders = new Map<string, unknown>();
+	let open = true;
 
 	const workspace = {
-		getLeavesOfType: (): Array<{ view: { containerEl: HTMLElement } }> => [
-			{ view: { containerEl: container } },
-		],
+		getLeavesOfType: (): Array<{ view: { containerEl: HTMLElement } }> =>
+			open ? [{ view: { containerEl: container } }] : [],
 		onLayoutReady: (cb: () => void): void => cb(),
 		on: (): unknown => ({}),
 	};
@@ -39,6 +40,9 @@ function harness(): Harness {
 				cls: 'nav-folder-title',
 				attr: { 'data-path': path },
 			}),
+		closeExplorer: () => {
+			open = false;
+		},
 	};
 }
 
@@ -111,5 +115,48 @@ describe('FolderChildCountPlugin', () => {
 		});
 
 		plugin.onunload();
+	});
+
+	// SEC-01: disabling the plugin must not leave stale badges behind.
+	it('removes badges from the DOM on unload', async () => {
+		const h = harness();
+		h.setFolder('A', folder(file(), file()));
+		const titleEl = h.addTitle('A');
+		const plugin = new FolderChildCountPlugin(h.app, {} as PluginManifest);
+
+		await plugin.onload();
+		expect(titleEl.querySelector(BADGE)).not.toBeNull();
+
+		plugin.onunload();
+		expect(titleEl.querySelector(BADGE)).toBeNull();
+	});
+
+	// SEC-02: a debounced refresh must not revive the plugin after unload.
+	it('does nothing when refreshed after unload', async () => {
+		const h = harness();
+		h.setFolder('A', folder(file()));
+		const titleEl = h.addTitle('A');
+		const plugin = new FolderChildCountPlugin(h.app, {} as PluginManifest);
+
+		await plugin.onload();
+		plugin.onunload();
+		plugin.refreshAll();
+
+		expect(titleEl.querySelector(BADGE)).toBeNull();
+	});
+
+	// SEC-03: closing a file explorer must release its observer.
+	it('stops observing a file explorer that was removed', async () => {
+		const h = harness();
+		h.setFolder('A', folder(file()));
+		const plugin = new FolderChildCountPlugin(h.app, {} as PluginManifest);
+		await plugin.onload();
+
+		const disconnect = vi.spyOn(MutationObserver.prototype, 'disconnect');
+		h.closeExplorer();
+		plugin.refreshAll();
+
+		expect(disconnect).toHaveBeenCalled();
+		disconnect.mockRestore();
 	});
 });

@@ -14,6 +14,14 @@ and this project adheres to
   bold and "show only on hover" (desktop).
 - README section documenting customization with settings and CSS snippets.
 
+### Fixed
+
+- Remove count badges from the DOM when the plugin is unloaded, so disabling
+  it no longer leaves stale counters behind.
+- Ignore queued refreshes after unload, so a pending debounce cannot revive the
+  plugin.
+- Release the file-explorer `MutationObserver` when a file explorer is closed.
+
 ## [1.0.0] - 2026-10-13
 
 ### Added

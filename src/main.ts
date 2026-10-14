@@ -1,7 +1,7 @@
 import { Plugin, TFolder, debounce } from 'obsidian';
 import { DEFAULT_SETTINGS, FolderChildCountSettingTab } from './settings';
 import type { FolderChildCountSettings } from './settings';
-import { BADGE_CLASS, updateFolderBadge } from './badge';
+import { BADGE_CLASS, removeBadges, updateFolderBadge } from './badge';
 
 export default class FolderChildCountPlugin extends Plugin {
 	settings!: FolderChildCountSettings;
@@ -10,6 +10,9 @@ export default class FolderChildCountPlugin extends Plugin {
 	private readonly observers = new Map<HTMLElement, MutationObserver>();
 
 	private readonly scheduleRefresh = debounce(() => this.refreshAll(), 100);
+
+	/** Set on unload so a pending debounce cannot revive the plugin. */
+	private unloaded = false;
 
 	async onload(): Promise<void> {
 		await this.loadSettings();
@@ -37,8 +40,12 @@ export default class FolderChildCountPlugin extends Plugin {
 	}
 
 	onunload(): void {
+		this.unloaded = true;
 		for (const observer of this.observers.values()) {
 			observer.disconnect();
+		}
+		for (const containerEl of this.observers.keys()) {
+			removeBadges(containerEl);
 		}
 		this.observers.clear();
 	}
@@ -57,13 +64,27 @@ export default class FolderChildCountPlugin extends Plugin {
 
 	/** Rewrite every visible folder badge using the current settings. */
 	refreshAll(): void {
+		if (this.unloaded) {
+			return;
+		}
+
+		const activeContainers = new Set<HTMLElement>();
 		for (const leaf of this.app.workspace.getLeavesOfType('file-explorer')) {
 			const containerEl = leaf.view.containerEl;
+			activeContainers.add(containerEl);
 			this.observeExplorer(containerEl);
 			for (const titleEl of containerEl.querySelectorAll<HTMLElement>(
 				'.nav-folder-title',
 			)) {
 				this.updateTitle(titleEl);
+			}
+		}
+
+		// Drop observers for file explorers that no longer exist.
+		for (const [containerEl, observer] of this.observers) {
+			if (!activeContainers.has(containerEl)) {
+				observer.disconnect();
+				this.observers.delete(containerEl);
 			}
 		}
 	}
