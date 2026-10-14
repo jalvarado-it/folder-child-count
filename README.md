@@ -55,18 +55,28 @@ npm run lint
 
 ### Testing in a vault
 
-To test the plugin in a real vault, copy (or symlink) the built plugin into the
-vault's plugins folder:
+The built plugin must live in the vault's plugins folder:
 
 ```
 <your-vault>/.obsidian/plugins/folder-child-count/
 ```
 
-At minimum that folder needs `main.js`, `manifest.json` and `styles.css`. Then
-reload Obsidian and enable the plugin.
+There is a helper script that builds the destination folder and links the
+required files (`main.js`, `manifest.json`, `styles.css`) for you:
 
-A convenient way to develop is to symlink `main.js`, `manifest.json` and
-`styles.css` into the vault while `npm run dev` rebuilds them.
+```bash
+npm run build
+npm run install:vault -- /path/to/your/vault
+# or set the path once:
+OBSIDIAN_VAULT=/path/to/your/vault npm run install:vault
+
+# copy real files instead of symlinks:
+npm run install:vault -- /path/to/your/vault --copy
+```
+
+By default the files are **symlinked**, so `npm run dev` rebuilds are picked up
+as soon as you reload Obsidian (`Ctrl/Cmd + R`). Then enable the plugin under
+**Settings → Community plugins**.
 
 ### Project structure
 
