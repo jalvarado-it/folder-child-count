@@ -13,8 +13,10 @@ export class TFolder {
 	children: Array<TFile | TFolder> = [];
 }
 
-/** Only needed so `settings.ts` can be imported by tests. */
-export class App {}
+export class App {
+	workspace: unknown = {};
+	vault: unknown = {};
+}
 
 /** Only needed so `settings.ts` can be imported by tests. */
 export class PluginSettingTab {
@@ -26,4 +28,46 @@ export class PluginSettingTab {
 		this.app = app;
 		this.plugin = plugin;
 	}
+}
+
+/** Trailing-edge debounce, matching the behavior the plugin relies on. */
+export function debounce<A extends unknown[]>(
+	cb: (...args: A) => void,
+	timeout = 0,
+): (...args: A) => void {
+	let handle: number | undefined;
+	return (...args: A): void => {
+		if (handle !== undefined) {
+			window.clearTimeout(handle);
+		}
+		handle = window.setTimeout(() => {
+			handle = undefined;
+			cb(...args);
+		}, timeout);
+	};
+}
+
+/** Minimal `Plugin` base class covering the API the plugin actually calls. */
+export class Plugin {
+	app: App;
+	manifest: unknown;
+
+	private data: unknown;
+
+	constructor(app: App, manifest: unknown) {
+		this.app = app;
+		this.manifest = manifest;
+	}
+
+	async loadData(): Promise<unknown> {
+		return this.data;
+	}
+
+	async saveData(data: unknown): Promise<void> {
+		this.data = data;
+	}
+
+	addSettingTab(_tab: unknown): void {}
+	registerEvent(_ref: unknown): void {}
+	addCommand(_command: unknown): void {}
 }

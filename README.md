@@ -1,5 +1,9 @@
 # Folder Child Count
 
+[![CI](https://github.com/jalvarado-it/obsidian-folder-child-count/actions/workflows/ci.yml/badge.svg)](https://github.com/jalvarado-it/obsidian-folder-child-count/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/jalvarado-it/obsidian-folder-child-count?sort=semver)](https://github.com/jalvarado-it/obsidian-folder-child-count/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 An [Obsidian](https://obsidian.md) plugin that shows the number of files and
 subfolders contained in each folder, right next to the folder name in the file
 explorer.
@@ -76,6 +80,7 @@ A convenient way to develop is to symlink `main.js`, `manifest.json` and
 ├── tests/
 │   ├── folder-count.test.ts  # Unit tests for the counting logic
 │   ├── badge.test.ts         # DOM tests for the badge (jsdom)
+│   ├── plugin.test.ts        # Integration tests for main.ts + observers
 │   ├── helpers.ts            # Test factories for folders/files
 │   ├── obsidian-mock.ts      # Runtime stub for the types-only obsidian package
 │   └── setup-dom.ts          # jsdom shim for Obsidian's DOM helpers

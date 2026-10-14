@@ -1,4 +1,4 @@
-import { TFolder } from 'obsidian';
+import type { TFolder } from 'obsidian';
 import { countChildren } from './folder-count';
 import type { FolderChildCountSettings } from './settings';
 
