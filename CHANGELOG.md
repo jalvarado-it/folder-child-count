@@ -21,6 +21,7 @@ and this project adheres to
 - Ignore queued refreshes after unload, so a pending debounce cannot revive the
   plugin.
 - Release the file-explorer `MutationObserver` when a file explorer is closed.
+- Set `authorUrl` and drop the empty `fundingUrl` in `manifest.json`.
 
 ### Security
 
@@ -28,6 +29,8 @@ and this project adheres to
 - Use minimal `contents: read` permissions in the CI workflow.
 - Dependabot configuration for GitHub Actions and npm dependencies.
 - Pin the `obsidian` dev dependency instead of tracking `latest`.
+- Validate the plugin id before using it in filesystem paths, and fail with a
+  clear message on filesystem conflicts, in the vault install script.
 
 ## [1.0.0] - 2026-10-13
 

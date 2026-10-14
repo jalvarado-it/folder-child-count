@@ -24,6 +24,9 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const FILES = ['main.js', 'manifest.json', 'styles.css'];
+// Obsidian plugin ids are lowercase alphanumeric with dashes. Rejecting anything
+// else keeps the id safe to use as a single path segment.
+const PLUGIN_ID_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 
 function fail(message) {
 	console.error(`\n\u2717 ${message}\n`);
@@ -32,6 +35,37 @@ function fail(message) {
 
 function expandTilde(input) {
 	return input.replace(/^~(?=$|[/\\])/, process.env.HOME ?? '~');
+}
+
+/** True if the path exists, including as a (possibly broken) symlink. */
+function pathExists(path) {
+	try {
+		lstatSync(path);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+function installFile(source, target, copy) {
+	if (pathExists(target)) {
+		// lstatSync does not follow symlinks, so a link to a directory is
+		// replaced rather than treated as a real directory.
+		if (lstatSync(target).isDirectory()) {
+			fail(`"${target}" is a directory; remove it manually and try again.`);
+		}
+		rmSync(target, { force: true });
+	}
+
+	try {
+		if (copy) {
+			copyFileSync(source, target);
+		} else {
+			symlinkSync(source, target);
+		}
+	} catch (error) {
+		fail(`Could not write "${target}": ${error.message}`);
+	}
 }
 
 const args = process.argv.slice(2);
@@ -60,27 +94,15 @@ for (const file of FILES) {
 }
 
 const manifest = JSON.parse(readFileSync(join(ROOT, 'manifest.json'), 'utf8'));
+if (typeof manifest.id !== 'string' || !PLUGIN_ID_PATTERN.test(manifest.id)) {
+	fail(`Refusing to install unsafe plugin id: ${JSON.stringify(manifest.id)}`);
+}
+
 const destDir = join(vaultPath, '.obsidian', 'plugins', manifest.id);
 mkdirSync(destDir, { recursive: true });
 
 for (const file of FILES) {
-	const source = join(ROOT, file);
-	const target = join(destDir, file);
-
-	// Remove an existing file or symlink (rmSync with force ignores ENOENT).
-	try {
-		if (existsSync(target) || lstatSync(target)) {
-			rmSync(target, { force: true });
-		}
-	} catch {
-		// lstatSync throws when the target does not exist; nothing to remove.
-	}
-
-	if (copy) {
-		copyFileSync(source, target);
-	} else {
-		symlinkSync(source, target);
-	}
+	installFile(join(ROOT, file), join(destDir, file), copy);
 }
 
 console.log(
