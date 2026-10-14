@@ -178,6 +178,12 @@ npm run test:watch   # watch mode
 3. Create a GitHub release tagged with the version and attach `main.js`,
    `manifest.json` and `styles.css` as release assets.
 
+## Security
+
+An authorized security self-assessment (source review, dependency audit,
+supply-chain review and secret scanning) is documented in
+[`pentest/final-report.md`](pentest/final-report.md).
+
 ## License
 
 [MIT](LICENSE)
