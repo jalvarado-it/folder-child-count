@@ -19,6 +19,7 @@ npm install
 | `npm run dev`        | Build in watch mode (regenerates `main.js`).    |
 | `npm run build`      | Type-check and produce a minified `main.js`.    |
 | `npm run test`       | Run the unit tests once.                        |
+| `npm run checksums`  | Write `SHA256SUMS` for the release artifacts.   |
 | `npm run test:watch` | Run the tests in watch mode.                    |
 | `npm run lint`       | Lint the source with the Obsidian ESLint rules. |
 

@@ -37,6 +37,7 @@ and this project adheres to
 - Validate the plugin id before using it in filesystem paths, and fail with a
   clear message on filesystem conflicts, in the vault install script.
 - Sign release artifacts with GitHub Artifact Attestations (build provenance).
+- Publish a `SHA256SUMS` file with each release for offline integrity checks.
 
 ## [1.0.0] - 2026-10-13
 

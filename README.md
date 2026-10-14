@@ -184,8 +184,8 @@ npm run test:watch   # watch mode
 
    `.github/workflows/release.yml` runs the tests and build, generates a signed
    **build provenance attestation** (GitHub Artifact Attestations, backed by
-   Sigstore), and creates the release with `main.js`, `manifest.json` and
-   `styles.css`.
+   Sigstore) plus a `SHA256SUMS` file, and creates the release with `main.js`,
+   `manifest.json`, `styles.css` and `SHA256SUMS`.
 
 ### Verifying a signed release
 
@@ -202,6 +202,18 @@ gh attestation verify styles.css --repo <owner>/<repo>
 A successful check means the file's digest matches the attested build and that
 the provenance was issued by a workflow in that repository. For an additional
 layer of trust you can also sign the release tags with GPG (`git tag -s v1.0.0`).
+
+#### Checksums
+
+Each release also ships a `SHA256SUMS` file (generated with `npm run checksums`).
+Verify the downloaded artifacts against it:
+
+```bash
+# Linux
+sha256sum --check SHA256SUMS
+# macOS
+shasum -a 256 --check SHA256SUMS
+```
 
 ## Security
 
