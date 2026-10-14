@@ -25,8 +25,8 @@ and this project adheres to
 
 ### Changed
 
-- Target Node.js 26: `engines.node`, `.nvmrc`, CI `node-version` and
-  `@types/node` updated to the 26 line.
+- Target Node.js 24: `engines.node`, `.nvmrc`, CI `node-version` and
+  `@types/node` updated to the 24 line.
 
 ### Security
 

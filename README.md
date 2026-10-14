@@ -71,7 +71,7 @@ without extra effort.
 ## Requirements
 
 - Obsidian **1.13.0** or later.
-- Node.js **26** or later (development only; see `.nvmrc`).
+- Node.js **24** or later (development only; see `.nvmrc`).
 
 The plugin's settings tab is built with Obsidian's declarative settings API
 (`getSettingDefinitions`, available since 1.13.0), which keeps the settings
