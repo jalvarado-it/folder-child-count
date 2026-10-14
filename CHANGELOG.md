@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Appearance settings: custom color, style (badge / plain / outline), size,
+  bold and "show only on hover" (desktop).
+- README section documenting customization with settings and CSS snippets.
+
 ## [1.0.0] - 2026-10-13
 
 ### Added

@@ -61,4 +61,64 @@ describe('updateFolderBadge', () => {
 		);
 		expect(badgeText(el)).toBe('2');
 	});
+
+	it('applies a custom color when enabled', () => {
+		const el = title();
+		updateFolderBadge(
+			el,
+			folder(file()),
+			settings({ customColor: true, color: '#ff0000' }),
+		);
+		const badge = el.querySelector<HTMLElement>('.' + BADGE_CLASS);
+		expect(badge?.style.getPropertyValue('--fcc-color')).toBe('#ff0000');
+	});
+
+	it('falls back to the theme color when customColor is off', () => {
+		const el = title();
+		updateFolderBadge(el, folder(file()), settings({ color: '#ff0000' }));
+		const badge = el.querySelector<HTMLElement>('.' + BADGE_CLASS);
+		expect(badge?.style.getPropertyValue('--fcc-color')).toBe('');
+	});
+
+	it('applies variant, size, bold and hover classes', () => {
+		const el = title();
+		updateFolderBadge(
+			el,
+			folder(file()),
+			settings({
+				variant: 'outline',
+				size: 'large',
+				bold: true,
+				showOnHover: true,
+			}),
+		);
+		const badge = el.querySelector<HTMLElement>('.' + BADGE_CLASS);
+		expect(badge?.classList.contains(`${BADGE_CLASS}--outline`)).toBe(true);
+		expect(badge?.classList.contains(`${BADGE_CLASS}--large`)).toBe(true);
+		expect(badge?.classList.contains(`${BADGE_CLASS}--bold`)).toBe(true);
+		expect(badge?.classList.contains(`${BADGE_CLASS}--hover`)).toBe(true);
+	});
+
+	it('clears appearance classes when settings return to defaults', () => {
+		const el = title();
+		updateFolderBadge(
+			el,
+			folder(file()),
+			settings({
+				variant: 'plain',
+				size: 'small',
+				bold: true,
+				showOnHover: true,
+				customColor: true,
+				color: '#ff0000',
+			}),
+		);
+		updateFolderBadge(el, folder(file()), settings());
+		const badge = el.querySelector<HTMLElement>('.' + BADGE_CLASS);
+		expect(badge?.classList.contains(`${BADGE_CLASS}--plain`)).toBe(false);
+		expect(badge?.classList.contains(`${BADGE_CLASS}--small`)).toBe(false);
+		expect(badge?.classList.contains(`${BADGE_CLASS}--bold`)).toBe(false);
+		expect(badge?.classList.contains(`${BADGE_CLASS}--hover`)).toBe(false);
+		expect(badge?.style.getPropertyValue('--fcc-color')).toBe('');
+	});
 });

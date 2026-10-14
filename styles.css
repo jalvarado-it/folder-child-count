@@ -5,9 +5,44 @@
 	padding: 0 6px;
 	border-radius: var(--radius-s);
 	background-color: var(--background-modifier-hover);
-	color: var(--text-muted);
+	color: var(--fcc-color, var(--text-muted));
 	font-size: var(--font-ui-smaller);
 	font-variant-numeric: tabular-nums;
 	line-height: 1.6;
 	pointer-events: none;
+}
+
+/* Size variants. */
+.folder-child-count--small {
+	font-size: 0.75em;
+}
+
+.folder-child-count--large {
+	font-size: var(--font-ui-medium);
+}
+
+/* Weight. */
+.folder-child-count--bold {
+	font-weight: var(--font-semibold, 600);
+}
+
+/* Style variants. */
+.folder-child-count--plain {
+	padding: 0;
+	background-color: transparent;
+}
+
+.folder-child-count--outline {
+	background-color: transparent;
+	border: 1px solid var(--background-modifier-border);
+}
+
+/* Only show the count while hovering the folder row (desktop). */
+.folder-child-count--hover {
+	opacity: 0;
+	transition: opacity 120ms ease-in-out;
+}
+
+.nav-folder-title:hover .folder-child-count--hover {
+	opacity: 1;
 }

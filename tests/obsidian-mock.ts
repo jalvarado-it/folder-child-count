@@ -18,6 +18,11 @@ export class App {
 	vault: unknown = {};
 }
 
+export const Platform = {
+	isMobile: false,
+	isDesktop: true,
+};
+
 /** Only needed so `settings.ts` can be imported by tests. */
 export class PluginSettingTab {
 	app: App;
@@ -28,6 +33,9 @@ export class PluginSettingTab {
 		this.app = app;
 		this.plugin = plugin;
 	}
+
+	refreshDomState(): void {}
+	update(): void {}
 }
 
 /** Trailing-edge debounce, matching the behavior the plugin relies on. */

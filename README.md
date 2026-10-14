@@ -13,6 +13,8 @@ explorer.
 - Shows a small count badge next to every folder in the file explorer.
 - Count **files and folders**, **files only**, or **folders only**.
 - Optionally hide the badge for empty folders.
+- Customizable color, style (badge / plain / outline), size and bold.
+- Optionally show the count only while hovering a folder.
 - Updates automatically when files/folders are created, deleted or renamed.
 - Works on desktop and mobile.
 
@@ -21,6 +23,50 @@ explorer.
 1. Enable the plugin in **Settings → Community plugins**.
 2. Open the file explorer: each folder now shows its child count.
 3. Configure it under **Settings → Folder Child Count**.
+
+## Customization
+
+The count can be styled from the plugin settings or with a CSS snippet.
+
+### From settings
+
+Under **Settings → Folder Child Count → Appearance**:
+
+| Setting | What it does |
+| --- | --- |
+| Use a custom color | Use your own color instead of the theme's muted text color. |
+| Color | The color to use (shown when "Use a custom color" is on). |
+| Style | `Badge` (default), `Plain text` (no background) or `Outline`. |
+| Size | `Small`, `Normal` or `Large`. |
+| Bold | Render the count in bold. |
+| Show only on hover | Reveal the count when hovering the folder row (desktop only). |
+
+### With a CSS snippet
+
+Create `<your-vault>/.obsidian/snippets/folder-count.css` and enable it under
+**Settings → Appearance → CSS snippets**:
+
+```css
+.folder-child-count {
+	color: var(--text-accent);
+	background-color: transparent;
+	font-weight: 600;
+	font-family: var(--font-monospace);
+	font-size: 0.7em;
+}
+
+/* Reveal the count only while hovering a folder */
+.nav-folder-title .folder-child-count {
+	opacity: 0;
+	transition: opacity 120ms ease-in-out;
+}
+.nav-folder-title:hover .folder-child-count {
+	opacity: 1;
+}
+```
+
+By default the badge uses Obsidian's CSS variables, so it follows your theme
+without extra effort.
 
 ## Requirements
 
