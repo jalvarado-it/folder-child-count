@@ -1,0 +1,13 @@
+/* Style for the child-count badge shown next to folders in the file explorer. */
+.folder-child-count {
+	flex: 0 0 auto;
+	margin-inline-start: auto;
+	padding: 0 6px;
+	border-radius: var(--radius-s);
+	background-color: var(--background-modifier-hover);
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	font-variant-numeric: tabular-nums;
+	line-height: 1.6;
+	pointer-events: none;
+}

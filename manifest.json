@@ -1,0 +1,11 @@
+{
+	"id": "folder-child-count",
+	"name": "Folder Child Count",
+	"version": "1.0.0",
+	"minAppVersion": "1.13.0",
+	"description": "Show the number of files and subfolders contained in each folder in the file explorer.",
+	"author": "Jesus",
+	"authorUrl": "",
+	"fundingUrl": "",
+	"isDesktopOnly": false
+}
