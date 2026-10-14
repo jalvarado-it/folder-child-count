@@ -183,7 +183,8 @@ npm run test:watch   # watch mode
    ```
 
    `npm version` also commits the bumped `manifest.json`/`versions.json` and
-   creates the `vX.Y.Z` tag (the workflow accepts an optional leading `v`).
+   creates the tag. Tags are unprefixed (`.npmrc` sets `tag-version-prefix=`),
+   e.g. `1.0.1` rather than `v1.0.1`.
 
    `.github/workflows/release.yml` runs the tests and build, generates a signed
    **build provenance attestation** (GitHub Artifact Attestations, backed by
