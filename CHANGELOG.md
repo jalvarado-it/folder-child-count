@@ -22,6 +22,13 @@ and this project adheres to
   plugin.
 - Release the file-explorer `MutationObserver` when a file explorer is closed.
 
+### Security
+
+- Pin GitHub Actions to full commit SHAs instead of mutable tags.
+- Use minimal `contents: read` permissions in the CI workflow.
+- Dependabot configuration for GitHub Actions and npm dependencies.
+- Pin the `obsidian` dev dependency instead of tracking `latest`.
+
 ## [1.0.0] - 2026-10-13
 
 ### Added
