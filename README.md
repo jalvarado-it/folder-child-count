@@ -175,9 +175,33 @@ npm run test:watch   # watch mode
 
 1. Update the version with `npm version patch|minor|major` (this runs
    `version-bump.mjs` to keep `manifest.json` and `versions.json` in sync).
-2. Run `npm run build`.
-3. Create a GitHub release tagged with the version and attach `main.js`,
-   `manifest.json` and `styles.css` as release assets.
+2. Tag and push. The release workflow builds, attests and publishes:
+
+   ```bash
+   npm version patch        # updates manifest.json + versions.json
+   git push --follow-tags
+   ```
+
+   `.github/workflows/release.yml` runs the tests and build, generates a signed
+   **build provenance attestation** (GitHub Artifact Attestations, backed by
+   Sigstore), and creates the release with `main.js`, `manifest.json` and
+   `styles.css`.
+
+### Verifying a signed release
+
+Attestations are keyless and bound to this repository's release workflow.
+Anyone can verify that a downloaded asset was produced by this repo's CI from
+the tagged commit:
+
+```bash
+gh attestation verify main.js --repo <owner>/<repo>
+gh attestation verify manifest.json --repo <owner>/<repo>
+gh attestation verify styles.css --repo <owner>/<repo>
+```
+
+A successful check means the file's digest matches the attested build and that
+the provenance was issued by a workflow in that repository. For an additional
+layer of trust you can also sign the release tags with GPG (`git tag -s v1.0.0`).
 
 ## Security
 

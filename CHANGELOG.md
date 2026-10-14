@@ -36,6 +36,7 @@ and this project adheres to
 - Pin the `obsidian` dev dependency instead of tracking `latest`.
 - Validate the plugin id before using it in filesystem paths, and fail with a
   clear message on filesystem conflicts, in the vault install script.
+- Sign release artifacts with GitHub Artifact Attestations (build provenance).
 
 ## [1.0.0] - 2026-10-13
 
