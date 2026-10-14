@@ -7,7 +7,7 @@ covers how to set up the project and the conventions we follow.
 
 ```bash
 git clone <your-fork-url>
-cd obsidian-folder-child-count
+cd folder-child-count
 nvm use          # uses the Node version pinned in .nvmrc
 npm install
 ```

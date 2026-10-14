@@ -1,7 +1,7 @@
 # Folder Child Count
 
-[![CI](https://github.com/jalvarado-it/obsidian-folder-child-count/actions/workflows/ci.yml/badge.svg)](https://github.com/jalvarado-it/obsidian-folder-child-count/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/jalvarado-it/obsidian-folder-child-count?sort=semver)](https://github.com/jalvarado-it/obsidian-folder-child-count/releases)
+[![CI](https://github.com/jalvarado-it/folder-child-count/actions/workflows/ci.yml/badge.svg)](https://github.com/jalvarado-it/folder-child-count/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/jalvarado-it/folder-child-count?sort=semver)](https://github.com/jalvarado-it/folder-child-count/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 An [Obsidian](https://obsidian.md) plugin that shows the number of files and

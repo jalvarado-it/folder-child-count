@@ -49,5 +49,5 @@ and this project adheres to
 - Automatic refresh when files and folders are created, deleted or renamed.
 - Declarative settings tab (requires Obsidian 1.13.0 or later).
 
-[Unreleased]: https://github.com/jalvarado-it/obsidian-folder-child-count/compare/1.0.0...HEAD
-[1.0.0]: https://github.com/jalvarado-it/obsidian-folder-child-count/releases/tag/1.0.0
+[Unreleased]: https://github.com/jalvarado-it/folder-child-count/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/jalvarado-it/folder-child-count/releases/tag/1.0.0
