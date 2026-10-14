@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: npm
+      - run: npm ci
+      - run: npm run test
+      - run: npm run build
+
+      - name: Verify tag matches manifest version
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          manifest_version="$(node -p "require('./manifest.json').version")"
+          if [ "$tag" != "$manifest_version" ]; then
+            echo "::error::Tag '$tag' does not match manifest version '$manifest_version'."
+            exit 1
+          fi
+
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          gh release create "$tag" \
+            --title "$tag" \
+            --generate-notes \
+            main.js manifest.json styles.css

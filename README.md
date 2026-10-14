@@ -18,6 +18,16 @@ explorer.
 2. Open the file explorer: each folder now shows its child count.
 3. Configure it under **Settings → Folder Child Count**.
 
+## Requirements
+
+- Obsidian **1.13.0** or later.
+
+The plugin's settings tab is built with Obsidian's declarative settings API
+(`getSettingDefinitions`, available since 1.13.0), which keeps the settings
+searchable and avoids the deprecated imperative `display()` method. If you need
+to support older app versions, you can lower `minAppVersion` in `manifest.json`
+and add a `display()` fallback that renders the same options with `new Setting()`.
+
 ## Development
 
 This project uses TypeScript and [esbuild](https://esbuild.github.io/).
@@ -29,8 +39,14 @@ npm install
 # Compile and watch for changes (development)
 npm run dev
 
+# Run the unit tests
+npm run test
+
 # Type-check and produce a production build
 npm run build
+
+# Lint the source
+npm run lint
 ```
 
 ### Testing in a vault
@@ -56,11 +72,35 @@ A convenient way to develop is to symlink `main.js`, `manifest.json` and
 │   ├── main.ts          # Plugin entry point, DOM badges, observers
 │   ├── settings.ts      # Settings interface, defaults and settings tab
 │   └── folder-count.ts  # Pure counting logic
+├── tests/
+│   ├── folder-count.test.ts  # Unit tests for the counting logic
+│   └── obsidian-mock.ts      # Runtime stub for the types-only obsidian package
+├── .github/workflows/   # CI and release automation
 ├── esbuild.config.mjs   # Build configuration
+├── vitest.config.ts     # Test configuration
 ├── manifest.json        # Obsidian plugin manifest
 ├── styles.css           # Badge styling
 └── versions.json        # Version -> minimum app version map
 ```
+
+### Testing
+
+Tests run with [Vitest](https://vitest.dev/). Because the `obsidian` package
+only ships type declarations, `vitest.config.ts` aliases it to
+`tests/obsidian-mock.ts`, a tiny runtime stub providing the `TFile` and
+`TFolder` classes used by `folder-count.ts`.
+
+```bash
+npm run test         # run once
+npm run test:watch   # watch mode
+```
+
+### Continuous integration
+
+- `.github/workflows/ci.yml` runs lint, tests and build on pushes and pull
+  requests.
+- `.github/workflows/release.yml` builds and publishes a GitHub release when a
+  tag is pushed (the tag must match `manifest.json`'s `version`).
 
 ## Releasing
 
