@@ -30,4 +30,11 @@ export default defineConfig(
 		},
 	},
 	...obsidianmd.configs.recommended,
+	{
+		// Test files run under jsdom, where Obsidian's DOM helpers do not exist.
+		files: ['tests/**/*.ts'],
+		rules: {
+			'obsidianmd/prefer-create-el': 'off',
+		},
+	},
 );

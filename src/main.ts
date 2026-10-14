@@ -1,12 +1,7 @@
 import { Plugin, TFolder, debounce } from 'obsidian';
-import {
-	DEFAULT_SETTINGS,
-	FolderChildCountSettings,
-	FolderChildCountSettingTab,
-} from './settings';
-import { countChildren } from './folder-count';
-
-const BADGE_CLASS = 'folder-child-count';
+import { DEFAULT_SETTINGS, FolderChildCountSettingTab } from './settings';
+import type { FolderChildCountSettings } from './settings';
+import { BADGE_CLASS, updateFolderBadge } from './badge';
 
 export default class FolderChildCountPlugin extends Plugin {
 	settings!: FolderChildCountSettings;
@@ -90,28 +85,16 @@ export default class FolderChildCountPlugin extends Plugin {
 
 	private updateTitle(titleEl: HTMLElement): void {
 		const path = titleEl.getAttribute('data-path');
-		const badge = titleEl.querySelector<HTMLElement>('.' + BADGE_CLASS);
+		const folder = path
+			? this.app.vault.getAbstractFileByPath(path)
+			: null;
 
-		if (!this.settings.enabled || !path) {
-			badge?.remove();
-			return;
-		}
-
-		const folder = this.app.vault.getAbstractFileByPath(path);
 		if (!(folder instanceof TFolder)) {
-			badge?.remove();
+			titleEl.querySelector('.' + BADGE_CLASS)?.remove();
 			return;
 		}
 
-		const count = countChildren(folder, this.settings.mode);
-		if (count === 0 && this.settings.hideWhenZero) {
-			badge?.remove();
-			return;
-		}
-
-		const badgeEl =
-			badge ?? titleEl.createSpan({ cls: BADGE_CLASS });
-		badgeEl.setText(String(count));
+		updateFolderBadge(titleEl, folder, this.settings);
 	}
 
 	private isOwnMutation(mutation: MutationRecord): boolean {
@@ -132,10 +115,13 @@ export default class FolderChildCountPlugin extends Plugin {
 	}
 
 	private isBadgeNode(node: Node): boolean {
-		const el = node as HTMLElement;
-		if (typeof el.hasClass !== 'function') {
+		if (node.nodeType !== Node.ELEMENT_NODE) {
 			return false;
 		}
-		return el.hasClass(BADGE_CLASS) || el.closest('.' + BADGE_CLASS) !== null;
+		const el = node as Element;
+		return (
+			el.classList.contains(BADGE_CLASS) ||
+			el.closest('.' + BADGE_CLASS) !== null
+		);
 	}
 }

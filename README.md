@@ -69,13 +69,17 @@ A convenient way to develop is to symlink `main.js`, `manifest.json` and
 ```
 .
 ├── src/
-│   ├── main.ts          # Plugin entry point, DOM badges, observers
+│   ├── main.ts          # Plugin entry point, file-explorer integration, observers
+│   ├── badge.ts         # Renders the count badge in a folder title
 │   ├── settings.ts      # Settings interface, defaults and settings tab
 │   └── folder-count.ts  # Pure counting logic
 ├── tests/
 │   ├── folder-count.test.ts  # Unit tests for the counting logic
-│   └── obsidian-mock.ts      # Runtime stub for the types-only obsidian package
-├── .github/workflows/   # CI and release automation
+│   ├── badge.test.ts         # DOM tests for the badge (jsdom)
+│   ├── helpers.ts            # Test factories for folders/files
+│   ├── obsidian-mock.ts      # Runtime stub for the types-only obsidian package
+│   └── setup-dom.ts          # jsdom shim for Obsidian's DOM helpers
+├── .github/             # CI, release workflow, templates and FUNDING
 ├── esbuild.config.mjs   # Build configuration
 ├── vitest.config.ts     # Test configuration
 ├── manifest.json        # Obsidian plugin manifest
@@ -85,10 +89,13 @@ A convenient way to develop is to symlink `main.js`, `manifest.json` and
 
 ### Testing
 
-Tests run with [Vitest](https://vitest.dev/). Because the `obsidian` package
-only ships type declarations, `vitest.config.ts` aliases it to
-`tests/obsidian-mock.ts`, a tiny runtime stub providing the `TFile` and
-`TFolder` classes used by `folder-count.ts`.
+Tests run with [Vitest](https://vitest.dev/) in a `jsdom` environment. The
+`obsidian` package only ships type declarations, so:
+
+- `vitest.config.ts` aliases `obsidian` to `tests/obsidian-mock.ts`, a tiny
+  runtime stub exposing the classes the source imports.
+- `tests/setup-dom.ts` shims the handful of `Element.prototype` helpers Obsidian
+  adds (`createSpan`, `createDiv`, `setText`) so `badge.ts` runs under jsdom.
 
 ```bash
 npm run test         # run once
@@ -113,3 +120,8 @@ npm run test:watch   # watch mode
 ## License
 
 [MIT](LICENSE)
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development setup and
+guidelines.

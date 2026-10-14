@@ -12,3 +12,18 @@ export class TFolder {
 	path = '';
 	children: Array<TFile | TFolder> = [];
 }
+
+/** Only needed so `settings.ts` can be imported by tests. */
+export class App {}
+
+/** Only needed so `settings.ts` can be imported by tests. */
+export class PluginSettingTab {
+	app: App;
+	plugin: unknown;
+	containerEl!: HTMLElement;
+
+	constructor(app: App, plugin: unknown) {
+		this.app = app;
+		this.plugin = plugin;
+	}
+}

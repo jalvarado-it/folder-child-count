@@ -1,22 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { TFile, TFolder } from 'obsidian';
 import { countChildren } from '../src/folder-count';
-
-// At runtime these resolve to `tests/obsidian-mock.ts`, so they are
-// constructible without Obsidian's real (argument-heavy) constructors.
-const MockFile = TFile as unknown as new () => TFile;
-const MockFolder = TFolder as unknown as new () => TFolder;
-
-function file(): TFile {
-	return new MockFile();
-}
-
-function folder(...children: Array<TFile | TFolder>): TFolder {
-	const folder = new MockFolder();
-	(folder as unknown as { children: Array<TFile | TFolder> }).children =
-		children;
-	return folder;
-}
+import { file, folder } from './helpers';
 
 describe('countChildren', () => {
 	it('counts every child when mode is "all"', () => {
