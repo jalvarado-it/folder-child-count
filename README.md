@@ -182,6 +182,9 @@ npm run test:watch   # watch mode
    git push --follow-tags
    ```
 
+   `npm version` also commits the bumped `manifest.json`/`versions.json` and
+   creates the `vX.Y.Z` tag (the workflow accepts an optional leading `v`).
+
    `.github/workflows/release.yml` runs the tests and build, generates a signed
    **build provenance attestation** (GitHub Artifact Attestations, backed by
    Sigstore) plus a `SHA256SUMS` file, and creates the release with `main.js`,
