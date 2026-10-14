@@ -23,6 +23,11 @@ and this project adheres to
 - Release the file-explorer `MutationObserver` when a file explorer is closed.
 - Set `authorUrl` and drop the empty `fundingUrl` in `manifest.json`.
 
+### Changed
+
+- Target Node.js 26: `engines.node`, `.nvmrc`, CI `node-version` and
+  `@types/node` updated to the 26 line.
+
 ### Security
 
 - Pin GitHub Actions to full commit SHAs instead of mutable tags.
