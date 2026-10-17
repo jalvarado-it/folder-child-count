@@ -17,6 +17,7 @@ explorer.
 - Optionally hide the badge for empty folders.
 - Customizable color, style (badge / plain / outline), size and bold.
 - Optionally show the count only while hovering a folder.
+- Ignore folders by exact path or regular expression.
 - Updates automatically when files/folders are created, deleted or renamed.
 - Works on desktop and mobile.
 
@@ -71,6 +72,33 @@ Create `<your-vault>/.obsidian/snippets/folder-count.css` and enable it under
 
 By default the badge uses Obsidian's CSS variables, so it follows your theme
 without extra effort.
+
+## Ignoring folders
+
+Under **Settings → Folder Child Count → Ignored folders** you can hide the count
+for matching folders and exclude them from their parent's count. Two rule types
+are supported, one rule per line (blank lines and lines starting with `#` are
+ignored):
+
+| Setting | Matches |
+| --- | --- |
+| Paths to ignore | A vault-relative path, **exactly** (e.g. `Archive/2023`). |
+| Regular expressions to ignore | A JavaScript regular expression tested against the folder path. |
+
+Example — ignore an exact folder, a whole subtree by regex, and `.trash`:
+
+```
+# Paths to ignore
+Archive/2023
+
+# Regular expressions to ignore
+^Archive(/|$)
+\.trash$
+```
+
+An ignored folder shows **no badge** and is **not counted** by its parent.
+Ignore rules only apply to folders, never to files. Invalid regular expressions
+are skipped, and a notice tells you how many were ignored.
 
 ## Requirements
 
@@ -137,9 +165,11 @@ as soon as you reload Obsidian (`Ctrl/Cmd + R`). Then enable the plugin under
 │   ├── main.ts          # Plugin entry point, file-explorer integration, observers
 │   ├── badge.ts         # Renders the count badge in a folder title
 │   ├── settings.ts      # Settings interface, defaults and settings tab
+│   ├── ignore.ts        # Compiles path/regex ignore rules into a matcher
 │   └── folder-count.ts  # Pure counting logic
 ├── tests/
 │   ├── folder-count.test.ts  # Unit tests for the counting logic
+│   ├── ignore.test.ts        # Unit tests for the ignore rules matcher
 │   ├── badge.test.ts         # DOM tests for the badge (jsdom)
 │   ├── plugin.test.ts        # Integration tests for main.ts + observers
 │   ├── helpers.ts            # Test factories for folders/files
