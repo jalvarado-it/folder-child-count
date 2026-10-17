@@ -1,6 +1,6 @@
 {
 	"name": "folder-child-count",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "Show the number of files and subfolders contained in each folder in Obsidian's file explorer.",
 	"main": "main.js",
 	"type": "module",
