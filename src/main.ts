@@ -1,7 +1,9 @@
-import { Plugin, TFolder, debounce } from 'obsidian';
+import { Notice, Plugin, TFolder, debounce } from 'obsidian';
 import { DEFAULT_SETTINGS, FolderChildCountSettingTab } from './settings';
 import type { FolderChildCountSettings } from './settings';
 import { BADGE_CLASS, removeBadges, updateFolderBadge } from './badge';
+import { compileIgnoreRules } from './ignore';
+import type { IgnoreMatcher } from './ignore';
 
 export default class FolderChildCountPlugin extends Plugin {
 	settings!: FolderChildCountSettings;
@@ -13,6 +15,10 @@ export default class FolderChildCountPlugin extends Plugin {
 
 	/** Set on unload so a pending debounce cannot revive the plugin. */
 	private unloaded = false;
+
+	/** Compiled ignore rules, rebuilt only when the relevant settings change. */
+	private ignoreMatcher: IgnoreMatcher = compileIgnoreRules(DEFAULT_SETTINGS);
+	private ignoreSource = '';
 
 	async onload(): Promise<void> {
 		await this.loadSettings();
@@ -56,6 +62,7 @@ export default class FolderChildCountPlugin extends Plugin {
 			DEFAULT_SETTINGS,
 			await this.loadData(),
 		) as FolderChildCountSettings;
+		this.refreshIgnoreMatcher();
 	}
 
 	async saveSettings(): Promise<void> {
@@ -67,6 +74,8 @@ export default class FolderChildCountPlugin extends Plugin {
 		if (this.unloaded) {
 			return;
 		}
+
+		this.refreshIgnoreMatcher();
 
 		const activeContainers = new Set<HTMLElement>();
 		for (const leaf of this.app.workspace.getLeavesOfType('file-explorer')) {
@@ -115,7 +124,31 @@ export default class FolderChildCountPlugin extends Plugin {
 			return;
 		}
 
-		updateFolderBadge(titleEl, folder, this.settings);
+		updateFolderBadge(
+			titleEl,
+			folder,
+			this.settings,
+			this.ignoreMatcher.isIgnored,
+		);
+	}
+
+	/** Recompile the ignore rules when the relevant settings changed. */
+	private refreshIgnoreMatcher(): void {
+		const source = [
+			this.settings.ignoreFolders,
+			this.settings.ignorePaths,
+			this.settings.ignoreRegex,
+		].join('\u0000');
+		if (source === this.ignoreSource) {
+			return;
+		}
+		this.ignoreSource = source;
+		this.ignoreMatcher = compileIgnoreRules(this.settings);
+		if (this.ignoreMatcher.invalidRegexes.length > 0) {
+			new Notice(
+				`Folder Child Count: skipped ${this.ignoreMatcher.invalidRegexes.length} invalid ignore regex(es).`,
+			);
+		}
 	}
 
 	private isOwnMutation(mutation: MutationRecord): boolean {

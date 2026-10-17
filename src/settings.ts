@@ -30,6 +30,12 @@ export interface FolderChildCountSettings {
 	bold: boolean;
 	/** Only show the count while hovering the folder row. */
 	showOnHover: boolean;
+	/** Hide and exclude folders matching the ignore rules below. */
+	ignoreFolders: boolean;
+	/** One vault-relative path per line to ignore (exact match). */
+	ignorePaths: string;
+	/** One regular expression per line, tested against the folder path. */
+	ignoreRegex: string;
 }
 
 export const DEFAULT_SETTINGS: FolderChildCountSettings = {
@@ -42,6 +48,9 @@ export const DEFAULT_SETTINGS: FolderChildCountSettings = {
 	size: 'normal',
 	bold: false,
 	showOnHover: false,
+	ignoreFolders: false,
+	ignorePaths: '',
+	ignoreRegex: '',
 };
 
 export class FolderChildCountSettingTab extends PluginSettingTab {
@@ -154,6 +163,41 @@ export class FolderChildCountSettingTab extends PluginSettingTab {
 							type: 'toggle',
 							key: 'showOnHover',
 							defaultValue: DEFAULT_SETTINGS.showOnHover,
+						},
+					},
+				],
+			},
+			{
+				type: 'group',
+				heading: 'Ignored folders',
+				items: [
+					{
+						name: 'Ignore folders',
+						desc: 'Hide the count for matching folders and exclude them from their parent count.',
+						control: {
+							type: 'toggle',
+							key: 'ignoreFolders',
+							defaultValue: DEFAULT_SETTINGS.ignoreFolders,
+						},
+					},
+					{
+						name: 'Paths to ignore',
+						desc: 'One vault-relative path per line, matched exactly. Lines starting with # are comments.',
+						visible: () => this.plugin.settings.ignoreFolders,
+						control: {
+							type: 'textarea',
+							key: 'ignorePaths',
+							defaultValue: DEFAULT_SETTINGS.ignorePaths,
+						},
+					},
+					{
+						name: 'Regular expressions to ignore',
+						desc: 'One JavaScript regular expression per line, tested against the folder path.',
+						visible: () => this.plugin.settings.ignoreFolders,
+						control: {
+							type: 'textarea',
+							key: 'ignoreRegex',
+							defaultValue: DEFAULT_SETTINGS.ignoreRegex,
 						},
 					},
 				],
