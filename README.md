@@ -8,6 +8,8 @@ An [Obsidian](https://obsidian.md) plugin that shows the number of files and
 subfolders contained in each folder, right next to the folder name in the file
 explorer.
 
+![Folder Child Count showing a badge next to each folder in the file explorer](screenshots/feature.png)
+
 ## Features
 
 - Shows a small count badge next to every folder in the file explorer.
@@ -31,6 +33,8 @@ The count can be styled from the plugin settings or with a CSS snippet.
 ### From settings
 
 Under **Settings → Folder Child Count → Appearance**:
+
+![The Folder Child Count settings tab](screenshots/configuration.png)
 
 | Setting | What it does |
 | --- | --- |
