@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { countChildren } from '../src/folder-count';
-import { file, folder } from './helpers';
+import { file, fileAt, folder, folderAt } from './helpers';
 
 describe('countChildren', () => {
 	it('counts every child when mode is "all"', () => {
@@ -28,5 +28,30 @@ describe('countChildren', () => {
 		expect(countChildren(folder(nested), 'all')).toBe(1);
 		expect(countChildren(folder(nested), 'files')).toBe(0);
 		expect(countChildren(folder(nested), 'folders')).toBe(1);
+	});
+
+	it('excludes ignored subfolders from every mode', () => {
+		const isIgnored = (path: string): boolean => path === 'Archive';
+		const root = folderAt(
+			'root',
+			fileAt('root/a.md'),
+			folderAt('Archive'),
+			folderAt('Keep'),
+		);
+		expect(countChildren(root, 'all', isIgnored)).toBe(2);
+		expect(countChildren(root, 'folders', isIgnored)).toBe(1);
+		expect(countChildren(root, 'files', isIgnored)).toBe(1);
+	});
+
+	it('never ignores files, only folders', () => {
+		const isIgnored = (): boolean => true;
+		const root = folderAt(
+			'root',
+			fileAt('root/a.md'),
+			folderAt('Archive'),
+		);
+		expect(countChildren(root, 'files', isIgnored)).toBe(1);
+		expect(countChildren(root, 'folders', isIgnored)).toBe(0);
+		expect(countChildren(root, 'all', isIgnored)).toBe(1);
 	});
 });

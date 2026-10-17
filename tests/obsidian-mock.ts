@@ -23,6 +23,10 @@ export const Platform = {
 	isDesktop: true,
 };
 
+export class Notice {
+	constructor(_message: string) {}
+}
+
 /** Only needed so `settings.ts` can be imported by tests. */
 export class PluginSettingTab {
 	app: App;

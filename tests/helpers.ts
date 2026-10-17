@@ -17,3 +17,21 @@ export function folder(...children: Array<TFile | TFolder>): TFolder {
 		children;
 	return result;
 }
+
+function setPath<T extends TFile | TFolder>(node: T, path: string): T {
+	(node as unknown as { path: string }).path = path;
+	return node;
+}
+
+/** Build a fake folder at a specific path. */
+export function folderAt(
+	path: string,
+	...children: Array<TFile | TFolder>
+): TFolder {
+	return setPath(folder(...children), path);
+}
+
+/** Build a fake file at a specific path. */
+export function fileAt(path: string): TFile {
+	return setPath(file(), path);
+}
