@@ -12,6 +12,8 @@ and this project adheres to
 
 - Appearance settings: custom color, style (badge / plain / outline), size,
   bold and "show only on hover" (desktop).
+- Ignore folders by exact vault path or regular expression; ignored folders
+  show no badge and are excluded from their parent's count.
 - README section documenting customization with settings and CSS snippets.
 
 ### Fixed

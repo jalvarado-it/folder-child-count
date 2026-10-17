@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { App, PluginManifest } from 'obsidian';
 import FolderChildCountPlugin from '../src/main';
 import { DEFAULT_SETTINGS } from '../src/settings';
-import { file, folder } from './helpers';
+import { file, fileAt, folder, folderAt } from './helpers';
 
 const BADGE = '.folder-child-count';
 
@@ -158,5 +158,24 @@ describe('FolderChildCountPlugin', () => {
 
 		expect(disconnect).toHaveBeenCalled();
 		disconnect.mockRestore();
+	});
+
+	it('hides ignored folders and excludes them from parent counts', () => {
+		const h = harness();
+		h.setFolder(
+			'root',
+			folderAt('root', fileAt('root/a.md'), folderAt('Archive')),
+		);
+		h.setFolder('Archive', folderAt('Archive', fileAt('Archive/x.md')));
+		const rootTitle = h.addTitle('root');
+		const archiveTitle = h.addTitle('Archive');
+
+		const plugin = makePlugin(h.app);
+		plugin.settings.ignoreFolders = true;
+		plugin.settings.ignorePaths = 'Archive';
+		plugin.refreshAll();
+
+		expect(rootTitle.querySelector(BADGE)?.textContent).toBe('1');
+		expect(archiveTitle.querySelector(BADGE)).toBeNull();
 	});
 });

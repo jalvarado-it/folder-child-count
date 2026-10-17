@@ -48,15 +48,16 @@ export function updateFolderBadge(
 	titleEl: HTMLElement,
 	folder: TFolder,
 	settings: FolderChildCountSettings,
+	isIgnored: (path: string) => boolean = () => false,
 ): void {
 	const existing = titleEl.querySelector<HTMLElement>('.' + BADGE_CLASS);
 
-	if (!settings.enabled) {
+	if (!settings.enabled || isIgnored(folder.path)) {
 		existing?.remove();
 		return;
 	}
 
-	const count = countChildren(folder, settings.mode);
+	const count = countChildren(folder, settings.mode, isIgnored);
 	if (count === 0 && settings.hideWhenZero) {
 		existing?.remove();
 		return;

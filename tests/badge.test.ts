@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { BADGE_CLASS, removeBadges, updateFolderBadge } from '../src/badge';
 import { DEFAULT_SETTINGS } from '../src/settings';
 import type { FolderChildCountSettings } from '../src/settings';
-import { file, folder } from './helpers';
+import { file, fileAt, folder, folderAt } from './helpers';
 
 function title(): HTMLElement {
 	return document.body.createDiv({ cls: 'nav-folder-title' });
@@ -120,6 +120,28 @@ describe('updateFolderBadge', () => {
 		expect(badge?.classList.contains(`${BADGE_CLASS}--bold`)).toBe(false);
 		expect(badge?.classList.contains(`${BADGE_CLASS}--hover`)).toBe(false);
 		expect(badge?.style.getPropertyValue('--fcc-color')).toBe('');
+	});
+
+	it('removes the badge for an ignored folder', () => {
+		const el = title();
+		updateFolderBadge(
+			el,
+			folderAt('Archive', file()),
+			settings(),
+			(path) => path === 'Archive',
+		);
+		expect(el.querySelector('.' + BADGE_CLASS)).toBeNull();
+	});
+
+	it('excludes ignored subfolders from the parent count', () => {
+		const el = title();
+		updateFolderBadge(
+			el,
+			folderAt('root', fileAt('root/a.md'), folderAt('Archive')),
+			settings(),
+			(path) => path === 'Archive',
+		);
+		expect(badgeText(el)).toBe('1');
 	});
 });
 
