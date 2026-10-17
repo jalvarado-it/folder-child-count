@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-16
+
 ### Added
 
 - Appearance settings: custom color, style (badge / plain / outline), size,
@@ -51,5 +53,6 @@ and this project adheres to
 - Automatic refresh when files and folders are created, deleted or renamed.
 - Declarative settings tab (requires Obsidian 1.13.0 or later).
 
-[Unreleased]: https://github.com/jalvarado-it/folder-child-count/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/jalvarado-it/folder-child-count/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/jalvarado-it/folder-child-count/releases/tag/1.1.0
 [1.0.0]: https://github.com/jalvarado-it/folder-child-count/releases/tag/1.0.0
